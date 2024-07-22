@@ -1,6 +1,6 @@
 # 100_atl_homes
 
-### to run you'll need tol get a ChatGPT API key, and then add it to the env vars (along with the gpt url and model you'd like to use)
+### to run you'll need to get a ChatGPT API key, and then add it to the env vars (along with the gpt url and gpt model you'd like to use)
 
 ## then simply `yarn install`
 
