@@ -38,6 +38,8 @@ import {
 } from "chart.js";
 
 const apiKey = process.env.VUE_APP_GPT_API_KEY;
+const gptModel = process.env.GPT_MODEL;
+const gptApiUrl = process.env.GPT_API_URL;
 
 // Register Chart.js components
 Chart.register(
@@ -73,9 +75,9 @@ export default {
           )
           .join("\n\n");
         const res = await axios.post(
-          "https://api.openai.com/v1/chat/completions",
+          gptApiUrl,
           {
-            model: "gpt-3.5-turbo",
+            model: gptModel,
             messages: [
               {
                 role: "system",
@@ -139,225 +141,58 @@ export default {
       }
       return this.housingData.filter((hm) => {
         const home = toRaw(hm);
-        let include = true;
         if (!home || home === undefined) {
           return true;
         }
 
-        if (
-          filters.mostRecentSalePrice &&
-          home?.mostRecentSalePrice !== undefined
-        ) {
-          const priceNum = parseFloat(
-            filters.mostRecentSalePrice.replace(/[^0-9.]/g, "")
+        let include = true;
+
+        include =
+          include &&
+          this.checkFilter(
+            home.mostRecentSalePrice,
+            filters.mostRecentSalePrice
           );
-          if (
-            filters.mostRecentSalePrice.includes(">") &&
-            !(home?.mostRecentSalePrice > priceNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.mostRecentSalePrice.includes("<") &&
-            !(home?.mostRecentSalePrice < priceNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.mostRecentSalePrice.includes(">=") &&
-            !(home?.mostRecentSalePrice >= priceNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.mostRecentSalePrice.includes("<=") &&
-            !(home?.mostRecentSalePrice <= priceNum)
-          ) {
-            include = false;
-          }
-        }
-
-        if (filters.sqft && home?.sqft !== undefined) {
-          const sqftNum = parseFloat(filters.sqft.replace(/[^0-9.]/g, ""));
-          if (filters.sqft.includes(">") && !(home?.sqft > sqftNum)) {
-            include = false;
-          }
-          if (filters.sqft.includes("<") && !(home?.sqft < sqftNum)) {
-            include = false;
-          }
-          if (filters.sqft.includes(">=") && !(home?.sqft >= sqftNum)) {
-            include = false;
-          }
-          if (filters.sqft.includes("<=") && !(home?.sqft <= sqftNum)) {
-            include = false;
-          }
-        }
-
-        if (filters.bedrooms && home?.bedrooms !== undefined) {
-          const bedroomsNum = parseInt(
-            filters.bedrooms.replace(/[^0-9]/g, ""),
-            10
-          );
-          if (
-            filters.bedrooms.includes(">") &&
-            !(home?.bedrooms > bedroomsNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.bedrooms.includes("<") &&
-            !(home?.bedrooms < bedroomsNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.bedrooms.includes(">=") &&
-            !(home?.bedrooms >= bedroomsNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.bedrooms.includes("<=") &&
-            !(home?.bedrooms <= bedroomsNum)
-          ) {
-            include = false;
-          }
-        }
-
-        if (filters.bathrooms && home?.bathrooms !== undefined) {
-          const bathroomsNum = parseFloat(
-            filters.bathrooms.replace(/[^0-9.]/g, "")
-          );
-          if (
-            filters.bathrooms.includes(">") &&
-            !(home?.bathrooms > bathroomsNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.bathrooms.includes("<") &&
-            !(home?.bathrooms < bathroomsNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.bathrooms.includes(">=") &&
-            !(home?.bathrooms >= bathroomsNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.bathrooms.includes("<=") &&
-            !(home?.bathrooms <= bathroomsNum)
-          ) {
-            include = false;
-          }
-        }
-
-        if (filters.yearBuilt && home?.yearBuilt !== undefined) {
-          const yearBuiltNum = parseInt(
-            filters.yearBuilt.replace(/[^0-9]/g, ""),
-            10
-          );
-          if (
-            filters.yearBuilt.includes(">") &&
-            !(home?.yearBuilt > yearBuiltNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.yearBuilt.includes("<") &&
-            !(home?.yearBuilt < yearBuiltNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.yearBuilt.includes(">=") &&
-            !(home?.yearBuilt >= yearBuiltNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.yearBuilt.includes("<=") &&
-            !(home?.yearBuilt <= yearBuiltNum)
-          ) {
-            include = false;
-          }
-        }
-
-        if (filters.garageSpaces && home?.garageSpaces !== undefined) {
-          const garageSpacesNum = parseInt(
-            filters.garageSpaces.replace(/[^0-9]/g, ""),
-            10
-          );
-          if (
-            filters.garageSpaces.includes(">") &&
-            !(home?.garageSpaces > garageSpacesNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.garageSpaces.includes("<") &&
-            !(home?.garageSpaces < garageSpacesNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.garageSpaces.includes(">=") &&
-            !(home?.garageSpaces >= garageSpacesNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.garageSpaces.includes("<=") &&
-            !(home?.garageSpaces <= garageSpacesNum)
-          ) {
-            include = false;
-          }
-        }
-
-        if (filters.lotSize && home?.lotSize !== undefined) {
-          const lotSizeNum = parseFloat(
-            filters.lotSize.replace(/[^0-9.]/g, "")
-          );
-          if (filters.lotSize.includes(">") && !(home?.lotSize > lotSizeNum)) {
-            include = false;
-          }
-          if (filters.lotSize.includes("<") && !(home?.lotSize < lotSizeNum)) {
-            include = false;
-          }
-          if (
-            filters.lotSize.includes(">=") &&
-            !(home?.lotSize >= lotSizeNum)
-          ) {
-            include = false;
-          }
-          if (
-            filters.lotSize.includes("<=") &&
-            !(home?.lotSize <= lotSizeNum)
-          ) {
-            include = false;
-          }
-        }
-
-        if (filters.neighborhood && home?.neighborhood !== undefined) {
-          if (
-            !home?.neighborhood
-              .toLowerCase()
-              .includes(filters.neighborhood.toLowerCase())
-          ) {
-            include = false;
-          }
-        }
-
-        if (filters.zipCode && home?.zipCode !== undefined) {
-          if (!home?.zipCode.startsWith(filters.zipCode)) {
-            include = false;
-          }
-        }
+        include = include && this.checkFilter(home.sqft, filters.sqft);
+        include = include && this.checkFilter(home.bedrooms, filters.bedrooms);
+        include =
+          include && this.checkFilter(home.bathrooms, filters.bathrooms);
+        include =
+          include && this.checkFilter(home.yearBuilt, filters.yearBuilt);
+        include =
+          include && this.checkFilter(home.garageSpaces, filters.garageSpaces);
+        include = include && this.checkFilter(home.lotSize, filters.lotSize);
+        include =
+          include &&
+          this.checkStringFilter(home.neighborhood, filters.neighborhood);
+        include =
+          include &&
+          this.checkStringFilter(home.zipCode, filters.zipCode, true);
 
         return include;
       });
+    },
+
+    checkFilter(value, filter) {
+      if (filter && value !== undefined) {
+        const num = parseFloat(filter.replace(/[^0-9.]/g, ""));
+        if (filter.includes(">") && !(value > num)) return false;
+        if (filter.includes("<") && !(value < num)) return false;
+        if (filter.includes(">=") && !(value >= num)) return false;
+        if (filter.includes("<=") && !(value <= num)) return false;
+      }
+      return true;
+    },
+
+    checkStringFilter(value, filter, startsWith = false) {
+      if (filter && value !== undefined) {
+        if (startsWith) {
+          if (!value.startsWith(filter)) return false;
+        } else {
+          if (!value.toLowerCase().includes(filter.toLowerCase())) return false;
+        }
+      }
+      return true;
     },
     prepareChartData(data, key) {
       const chartData = {};
