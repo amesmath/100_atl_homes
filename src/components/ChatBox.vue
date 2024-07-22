@@ -38,8 +38,8 @@ import {
 } from "chart.js";
 
 const apiKey = process.env.VUE_APP_GPT_API_KEY;
-const gptModel = process.env.GPT_MODEL;
-const gptApiUrl = process.env.GPT_API_URL;
+const gptModel = process.env.VUE_APP_GPT_MODEL;
+const gptApiUrl = process.env.VUE_APP_GPT_API_URL;
 
 // Register Chart.js components
 Chart.register(
@@ -75,9 +75,9 @@ export default {
           )
           .join("\n\n");
         const res = await axios.post(
-          gptApiUrl,
+          `${gptApiUrl}`,
           {
-            model: gptModel,
+            model: `${gptModel}`,
             messages: [
               {
                 role: "system",
