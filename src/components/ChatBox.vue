@@ -216,6 +216,7 @@ export default {
           labels: Object.keys(this.chartData),
           datasets: [
             {
+              label: "Homes",
               data: Object.values(this.chartData),
               backgroundColor: config.colors,
             },
