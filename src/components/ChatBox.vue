@@ -1,9 +1,9 @@
 <template>
   <div class="chat-container">
-    <h1>100 ATL Homes</h1>
+    <h1>Home Data</h1>
     <textarea
       v-model="userInput"
-      placeholder="Query your ATL home data..."
+      placeholder="Query your home data..."
     ></textarea>
     <button @click="getResponse">Submit</button>
     <div v-if="conversationHistory.length">
@@ -239,12 +239,23 @@ export default {
   text-align: center;
 }
 textarea {
-  width: 100%;
-  height: 100px;
+  width: 500px;
+  height: 150px;
   margin-bottom: 10px;
+  border: 20px solid rgb(151, 134, 213);
+  border-radius: 8px;
+  font-size: 18px;
 }
 button {
   padding: 10px 20px;
+  margin-top: 12px;
+  border-color: transparent;
+  border-radius: 8px;
+  font-size: 17px;
+}
+button:hover {
+  cursor: pointer;
+  background-color: rgb(225, 225, 225);
 }
 canvas {
   max-width: 100%;
